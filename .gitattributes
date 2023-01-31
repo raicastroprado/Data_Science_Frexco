@@ -1,2 +1,19 @@
-# Auto detect text files and perform LF normalization
-* text=auto
+import pandas as pd
+from statsmodels.tsa.arima.model import ARIMA
+
+# Carregue os dados em um dataframe do Pandas
+data = pd.read_csv("dados.csv")
+
+# Converta a coluna de data em um tipo de data do Pandas
+data["Data"] = pd.to_datetime(data["Data"], format="%d/%m/%Y")
+
+# Defina a coluna de data como o índice do seu dataframe
+data.set_index("Data", inplace=True)
+
+# Treine o modelo ARIMA
+model = ARIMA(data["Vendas"], order=(1,1,1))
+model_fit = model.fit()
+
+# Faça a previsão dos próximos 5 dias
+pred = model_fit.forecast(steps=5)
+print("Previsão para os próximos 5 dias: ", pred[0])
